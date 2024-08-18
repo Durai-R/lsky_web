@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  useRouteError
+} from "react-router-dom";
+import React, { Suspense } from "react";
+import NavRoutes from "../src/routes/NavRoutes";
+import Layout from "./pages/Layout";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    errorElement: <ErrorBoundary />,
+    children: [
+      {
+        path: "*",
+        element: (
+          <Suspense>
+            <NavRoutes />
+          </Suspense>
+        ),
+        errorElement: <ErrorBoundary />
+      }
+    ]
+  }
+]);
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  return <RouterProvider router={router} />;
+}
+
+function ErrorBoundary() {
+  const error = useRouteError();
+  if (error) {
+    return <div>Error in page </div>;
+  }
 }
 
 export default App;
